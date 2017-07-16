@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta content="" name="keywords">
-<meta content="Welcome - My Programming Notes" property="og:title">
-<title>Welcome | My Programming Notes</title>
+<meta content="Data loading pipeline in Tensorflow - My Programming Notes" property="og:title">
+<title>Data loading pipeline in Tensorflow | My Programming Notes</title>
 <link rel="stylesheet" href="http://zonglin-li6565.github.io//css/style.css">
 <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 
@@ -35,28 +35,55 @@
 
   <section class="section">
     <div class="container">
-      <h2 class="subtitle is-6">July 11, 2017</h2>
-      <h1 class="title">Welcome</h1>
+      <h2 class="subtitle is-6">July 15, 2017</h2>
+      <h1 class="title">Data loading pipeline in Tensorflow</h1>
       
       <div class="content">
-        <p>Hello World. <em>Place holders</em> <strong>asdfasdfasdf</strong> <strong><em>lol</em></strong></p>
+        
 
-<p><a href="https://www.google.com">google</a></p>
+<p>Data is the most critical part for deep learning. The very popularity of deep
+neural nets roots in the huge amount of data we possess now. However, dealing
+with large dataset is always tricky, since if not properly handled, it might
+significantly slow down the training pipeline or bias the model we trained.</p>
 
-<blockquote>
-<p>I asdf qwer na;lhakj</p>
-</blockquote>
+<p>Tensorflow, the most popular deep learning framework of the time, supports
+the efficient loading of data as well. In this article we will look into how to
+make use of the queues and threads in Tensorflow to seamlessly stream a huge
+dataset.</p>
 
-<pre><code class="language-C++">#include &lt;iostream&gt;
-class HelloWorld
-{
-public:
-    void greeting()
-    {
-        std::cout &lt;&lt; &quot;hello world&quot; &lt;&lt; std::endl;
-    }
-};
-</code></pre>
+<h1 id="requirements"><strong>Requirements</strong></h1>
+
+<ul>
+<li><p>Tensorflow: The version tested is 1.2.1. To check the version of your
+Tensorflow, run the following command:</p>
+
+<pre><code class="language-bash">python -c 'import tensorflow as tf; print(tf.__version__)'
+</code></pre></li>
+
+<li><p>Dataset: Techniquely, you can use any dataset you want. In this article, we
+will use the dataset of a Kaggle competition: <a href="https://www.kaggle.com/c/planet-understanding-the-amazon-from-space/data">Planet: Understanding the
+Amazon from
+Space</a>.
+Download the train-jpg.tar.7z and train_v2.csv.zip.</p></li>
+
+<li><p>Pandas: We will need it to parse the csv file containing lables.</p></li>
+</ul>
+
+<h1 id="a-high-level-overview"><strong>A high level overview</strong></h1>
+
+<p>We will make use of the queueing system in Tensorflow. First of all, we create a
+file name queue, which will randomly shuffle the order of the file names
+dequeued, since we need to randomly shuffle the batch. Then, we create a second
+queue. This time the queue is used to hold data items waiting to be feeded into
+the training algorithm. In the middle of the file name queue and the data queue,
+are the data loader threads. We employ multiple threads of loader to parallelize
+the loading, and therefore increase the throughput. Fortunately, the queue in
+Tensorflow is already thread safe, so in each loader thread, we can simply read
+a file name from file name queue, and push the loaded data items into the data
+queue without no worry about synchronization. The GIF from Tensorflow official
+doc illustrates this process nicely.</p>
+
+<p><img src="https://www.tensorflow.org/images/AnimatedFileQueues.gif" alt="data loading" /></p>
 
       </div>
     </div>

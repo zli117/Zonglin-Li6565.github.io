@@ -7,10 +7,31 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; &lt;a href=&#34;https://github.com/Zonglin-Li6565&#34;&gt;Zonglin Li&lt;/a&gt; 2017</copyright>
-    <lastBuildDate>Tue, 11 Jul 2017 22:19:36 -0500</lastBuildDate>
+    <lastBuildDate>Sat, 15 Jul 2017 10:58:00 -0500</lastBuildDate>
     
 	<atom:link href="http://zonglin-li6565.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Data loading pipeline in Tensorflow</title>
+      <link>http://zonglin-li6565.github.io/post/tfloaddata/</link>
+      <pubDate>Sat, 15 Jul 2017 10:58:00 -0500</pubDate>
+      
+      <guid>http://zonglin-li6565.github.io/post/tfloaddata/</guid>
+      <description>Data is the most critical part for deep learning. The very popularity of deep neural nets roots in the huge amount of data we possess now. However, dealing with large dataset is always tricky, since if not properly handled, it might significantly slow down the training pipeline or bias the model we trained.
+Tensorflow, the most popular deep learning framework of the time, supports the efficient loading of data as well.</description>
+    </item>
+    
+    <item>
+      <title>ArtisticNN</title>
+      <link>http://zonglin-li6565.github.io/post/artisticnn/</link>
+      <pubDate>Sat, 15 Jul 2017 10:27:55 -0500</pubDate>
+      
+      <guid>http://zonglin-li6565.github.io/post/artisticnn/</guid>
+      <description>Introduction This is an implementation of the artistic neural network as described in this paper. VGG pretrained model weights can be downloaded from here. Use imagenet-vgg-verydeep-19.mat and imagenet-vgg-verydeep-16.mat.
+Checklist for dependencies:
+ Tensorflow, preferably with GPU support numpy scipy PIL If you want to run in notebook, IPython notebook is also required.  Get the pretrained weights The following bash code will automatically download the models. VGG19 is approximately 510M and VGG16 is approximately 491M.</description>
+    </item>
     
     <item>
       <title>Welcome</title>
@@ -18,9 +39,10 @@
       <pubDate>Tue, 11 Jul 2017 22:19:36 -0500</pubDate>
       
       <guid>http://zonglin-li6565.github.io/post/welcome/</guid>
-      <description>Hello World. Place holders
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ullamcorper aliquam gravida. Phasellus dapibus gravida sem ut finibus. Donec aliquet sollicitudin turpis, nec volutpat enim faucibus et. Donec felis ante, aliquam blandit dui ut, vulputate bibendum libero. Vestibulum tristique quis lorem nec venenatis. Nunc placerat ex dolor, ut rhoncus nunc rutrum a. Nulla facilisi. Curabitur in orci luctus, luctus felis vitae, sagittis ante.
-Aenean id urna in metus finibus consequat sit amet non felis.</description>
+      <description>Hello World. Place holders asdfasdfasdf lol
+google
+ I asdf qwer na;lhakj
+ #include &amp;lt;iostream&amp;gt; class HelloWorld { public: void greeting() { std::cout &amp;lt;&amp;lt; &amp;quot;hello world&amp;quot; &amp;lt;&amp;lt; std::endl; } };  </description>
     </item>
     
   </channel>

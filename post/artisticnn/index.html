@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta content="" name="keywords">
-<meta content="Welcome - My Programming Notes" property="og:title">
-<title>Welcome | My Programming Notes</title>
+<meta content="ArtisticNN - My Programming Notes" property="og:title">
+<title>ArtisticNN | My Programming Notes</title>
 <link rel="stylesheet" href="http://zonglin-li6565.github.io//css/style.css">
 <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 
@@ -35,27 +35,34 @@
 
   <section class="section">
     <div class="container">
-      <h2 class="subtitle is-6">July 11, 2017</h2>
-      <h1 class="title">Welcome</h1>
+      <h2 class="subtitle is-6">July 15, 2017</h2>
+      <h1 class="title">ArtisticNN</h1>
       
       <div class="content">
-        <p>Hello World. <em>Place holders</em> <strong>asdfasdfasdf</strong> <strong><em>lol</em></strong></p>
+        
 
-<p><a href="https://www.google.com">google</a></p>
+<h1 id="introduction">Introduction</h1>
 
-<blockquote>
-<p>I asdf qwer na;lhakj</p>
-</blockquote>
+<p>This is an implementation of the artistic neural network as described in this <a href="www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Gatys_Image_Style_Transfer_CVPR_2016_paper.pdf">paper</a>. VGG pretrained model weights can be downloaded from <a href="http://www.vlfeat.org/matconvnet/models/">here</a>. Use imagenet-vgg-verydeep-19.mat and imagenet-vgg-verydeep-16.mat.</p>
 
-<pre><code class="language-C++">#include &lt;iostream&gt;
-class HelloWorld
-{
-public:
-    void greeting()
-    {
-        std::cout &lt;&lt; &quot;hello world&quot; &lt;&lt; std::endl;
-    }
-};
+<p>Checklist for dependencies:</p>
+
+<ul>
+<li>Tensorflow, preferably with GPU support</li>
+<li>numpy</li>
+<li>scipy</li>
+<li>PIL</li>
+<li>If you want to run in notebook, IPython notebook is also required.</li>
+</ul>
+
+<h1 id="get-the-pretrained-weights"><strong>Get the pretrained weights</strong></h1>
+
+<p>The following bash code will automatically download the models. VGG19 is approximately 510M and VGG16 is approximately 491M. Comment out using &ldquo;#&rdquo; if you already have the model downloaded somewhere else. But don&rsquo;t forget to change the model path later (you will see it).</p>
+
+<pre><code class="language-bash">!if [ ! -e &quot;models/imagenet-vgg-verydeep-19.mat&quot; ]; then echo &quot;VGG19 does not exist&quot;; \
+    wget -P models/ http://www.vlfeat.org/matconvnet/models/imagenet-vgg-verydeep-19.mat; fi
+!if [ ! -e &quot;models/imagenet-vgg-verydeep-16.mat&quot; ]; then echo &quot;VGG16 does not exist&quot;; \
+    wget -P models/ http://www.vlfeat.org/matconvnet/models/imagenet-vgg-verydeep-16.mat; fi
 </code></pre>
 
       </div>
