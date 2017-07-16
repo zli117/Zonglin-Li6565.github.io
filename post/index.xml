@@ -33,17 +33,5 @@ Checklist for dependencies:
  Tensorflow, preferably with GPU support numpy scipy PIL If you want to run in notebook, IPython notebook is also required.  Get the pretrained weights The following bash code will automatically download the models. VGG19 is approximately 510M and VGG16 is approximately 491M.</description>
     </item>
     
-    <item>
-      <title>Welcome</title>
-      <link>http://zonglin-li6565.github.io/post/welcome/</link>
-      <pubDate>Tue, 11 Jul 2017 22:19:36 -0500</pubDate>
-      
-      <guid>http://zonglin-li6565.github.io/post/welcome/</guid>
-      <description>Hello World. Place holders asdfasdfasdf lol
-google
- I asdf qwer na;lhakj
- #include &amp;lt;iostream&amp;gt; class HelloWorld { public: void greeting() { std::cout &amp;lt;&amp;lt; &amp;quot;hello world&amp;quot; &amp;lt;&amp;lt; std::endl; } };  </description>
-    </item>
-    
   </channel>
 </rss>
