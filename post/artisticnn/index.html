@@ -59,9 +59,9 @@
 
 <p>The following bash code will automatically download the models. VGG19 is approximately 510M and VGG16 is approximately 491M. Comment out using &ldquo;#&rdquo; if you already have the model downloaded somewhere else. But don&rsquo;t forget to change the model path later (you will see it).</p>
 
-<pre><code class="language-bash">!if [ ! -e &quot;models/imagenet-vgg-verydeep-19.mat&quot; ]; then echo &quot;VGG19 does not exist&quot;; \
-    wget -P models/ http://www.vlfeat.org/matconvnet/models/imagenet-vgg-verydeep-19.mat; fi
-!if [ ! -e &quot;models/imagenet-vgg-verydeep-16.mat&quot; ]; then echo &quot;VGG16 does not exist&quot;; \
+<pre><code class="language-bash">if [ ! -e &quot;models/imagenet-vgg-verydeep-19.mat&quot; ]; then echo &quot;VGG19 does not exist&quot;; \
+   wget -P models/ http://www.vlfeat.org/matconvnet/models/imagenet-vgg-verydeep-19.mat; fi
+if [ ! -e &quot;models/imagenet-vgg-verydeep-16.mat&quot; ]; then echo &quot;VGG16 does not exist&quot;; \
     wget -P models/ http://www.vlfeat.org/matconvnet/models/imagenet-vgg-verydeep-16.mat; fi
 </code></pre>
 
