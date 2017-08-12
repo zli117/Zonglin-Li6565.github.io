@@ -102,7 +102,7 @@ code looks like this:</p>
     def _process_labels(self):
         pass
 
-    def _process_labels(self):
+    def _load_worker(self, sess):
         pass
 
     def get_batch_op(self, n):
@@ -130,13 +130,82 @@ self.sess = sess
 </code></pre>
 
 <p>Then comes the fun parts of creating the queues. But before we create any queue, we
-want to declare a coordinator with <a href="https://www.tensorflow.org/api_docs/python/tf/train/Coordinator"><code>tf.train.Coordinator()</code></a>.
+want to define a coordinator with <a href="https://www.tensorflow.org/api_docs/python/tf/train/Coordinator"><code>tf.train.Coordinator()</code></a>.
 According to the Tensorflow official doc, the coordinator implements a simple mechanism to
-coordinate the termination of a set of threads. So, basically a coordinator is just
-a shared (global) thread-safe flag between threads denotes whether it&rsquo;s time to terminate.</p>
+coordinate the termination of a set of threads. You can think it as a global shared flag variable passing information from the main thread to the spawned threads.</p>
 
 <pre><code class="language-python">self.coord = tf.train.Coordinator()
 </code></pre>
+
+<p>For our training task, we would like the batches to be randomly created to meet the stochastic assumption of the optimization algorithm. There are two options, either randomly suffle the file identifiers or suffle the loaded images. We are going for the first one.</p>
+
+<h2 id="create-a-randomly-shffled-file-id-queue">Create a randomly shffled file id queue</h2>
+
+<pre><code class="language-python">self.y, self.file_ids = self._process_labels()
+
+self.file_idx_q = tf.RandomShuffleQueue(10000, 0, dtypes=[tf.int32], shapes=[()])
+self.eq_fn_op = self.file_idx_q.enqueue_many([file_idxs])
+
+self.fn_qr = tf.train.QueueRunner(self.file_idx_q, [self.eq_fn_op])
+fn_thrds = self.fn_qr.create_threads(sess, coord=self.coord, start=True)
+</code></pre>
+
+<p>First, we generate the one-hot representation of the labels and the integer id for each image file (since we can easily map them back to the actual file names). Then we create a <a href="https://www.tensorflow.org/api_docs/python/tf/RandomShuffleQueue"><code>tf.RandomShuffleQueue</code></a> instance with capacity of 10000 (this value doesn&rsquo;t really matter since enqueuing file ids doesn&rsquo;t take too much time). To enqueue values as a batch, we use the <a href="https://www.tensorflow.org/api_docs/python/tf/RandomShuffleQueue#enqueue_many"><code>enqueue_many</code></a> function, which returns a tensor. Note that simply calling <code>enqueue_many</code> won&rsquo;t actually do the enqueue operation. Only when you evaluate the returned tensor will get those values into the queue. Lastly, the <a href="https://www.tensorflow.org/api_docs/python/tf/train/QueueRunner"><code>tf.train.QueueRunner</code></a> is a thread runs the enqueue tensor and <a href="https://www.tensorflow.org/api_docs/python/tf/train/QueueRunner#create_threads"><code>create_threads</code></a> starts the threads. Since here we are enqueuing the same values all the time, the generic runner is fine.</p>
+
+<h2 id="create-a-fifo-data-queue">Create a FIFO data queue</h2>
+
+<pre><code class="language-python">self.data_q = tf.FIFOQueue(500, dtypes=[tf.float32, tf.float32, tf.int32], shapes=[data_shape, label_shape, ()])
+self.X_holder = tf.placeholder(tf.float32)
+self.y_holder = tf.placeholder(tf.float32)
+self.idx_holder = tf.placeholder(tf.int32)
+self.enqueue = self.data_q.enqueue([self.X_holder, self.y_holder, self.idx_holder])
+self.fdx_dequeue = self.file_idx_q.dequeue()
+self.threads = [threading.Thread(target=self._load_worker, args=(sess,)) for i in range(num_thrds)]
+</code></pre>
+
+<p>Same idea as the file id queue, we create an enqueue operation tensor. The different is, instead of using a fixed value, we use placeholders, which we can populate later. This gives a lot of convenience for the loader worker threads. Another difference is the threads. Here we are manually creating threads with the loader function. Also we get an instance of dequeue operation for the loader function.</p>
+
+<h2 id="the-loader-function">The loader function</h2>
+
+<pre><code class="language-python">def _load_worker(self, sess):
+    while not self.coord.should_stop():
+        # dequeue one filename from the file name queue
+        idx = sess.run(self.fdx_dequeue)
+        # load the image
+        X = np.ndarray(self.data_shape)
+        y = np.ndarray(self.label_shape)
+        file_path = os.path.join(self.img_dir, self.file_ids[idx] + &quot;.jpg&quot;)
+        X = io.imread(file_path)
+        y = self.y[idx]
+        try:
+            sess.run(self.enqueue, feed_dict={
+                self.X_holder: X,
+                self.y_holder: y,
+                self.idx_holder: idx
+                })
+        except tf.errors.CancelledError:
+            return
+</code></pre>
+
+<p>In the dequeue function, several things are interesting. First,</p>
+
+<pre><code class="language-python">idx = sess.run(self.fdx_dequeue)
+</code></pre>
+
+<p>will perform dequeue action on the file id queue. Second is the way we are enqueuing the images. We wrap the whole enqueue operation in a <code>try except</code> block since evaluating enqueue tensor is blocking, therefore we can&rsquo;t terminate the thread if it&rsquo;s blocked on enqueue, unless we set <code>cancel_pending_enqueues</code> to be true when closing the queue. We&rsquo;ll get the <code>tf.errors.CancelledError</code> exception if enqueue has been cancelled.</p>
+
+<h2 id="the-stop-function">The stop function</h2>
+
+<pre><code class="language-python">def stop(self):
+    self.coord.request_stop()
+    d_q_clos = self.data_q.close(cancel_pending_enqueues=True)
+    self.sess.run(d_q_clos)
+    self.coord.join(self.threads)
+</code></pre>
+
+<p>This function is for clean exit. Since we have a lot of threads, we need a way to stop them before exit. With the help of the coordinator, this will be easy, just don&rsquo;t forget to evaluate the returned tensor for closing queue.</p>
+
+<p>This is all we need to do in order to load large dataset in Tensorflow. Also, checkout the full code on <a href="https://github.com/Zonglin-Li6565/Kaggle-Amazon">Github</a>. The <a href="https://github.com/Zonglin-Li6565/Kaggle-Amazon/blob/master/multithrdloader.py">multithrdloader.py</a> contains the full loader and <a href="https://github.com/Zonglin-Li6565/Kaggle-Amazon/blob/master/train.py">train.py</a> contains the actual training code.</p>
 
       </div>
     </div>
