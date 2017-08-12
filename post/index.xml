@@ -22,16 +22,5 @@
 Tensorflow, the most popular deep learning framework of the time, supports the efficient loading of data as well.</description>
     </item>
     
-    <item>
-      <title>ArtisticNN</title>
-      <link>http://zonglin-li6565.github.io/post/artisticnn/</link>
-      <pubDate>Sat, 15 Jul 2017 10:27:55 -0500</pubDate>
-      
-      <guid>http://zonglin-li6565.github.io/post/artisticnn/</guid>
-      <description>Introduction This is an implementation of the artistic neural network as described in this paper. VGG pretrained model weights can be downloaded from here. Use imagenet-vgg-verydeep-19.mat and imagenet-vgg-verydeep-16.mat.
-Checklist for dependencies:
- Tensorflow, preferably with GPU support numpy scipy PIL If you want to run in notebook, IPython notebook is also required.  Get the pretrained weights The following bash code will automatically download the models. VGG19 is approximately 510M and VGG16 is approximately 491M.</description>
-    </item>
-    
   </channel>
 </rss>
